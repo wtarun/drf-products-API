@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from .models import Product, Order, OrderItem
-from .serializer import ProductSerializer
+from .serializer import ProductSerializer, OrderSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
@@ -26,4 +26,21 @@ def product_detail(request, id):
     serializer = ProductSerializer(product)
 
     # response
+    return Response(serializer.data)
+
+# @api_view(['GET'])
+# def order_details(request):
+#     # Fetch all orders from DB
+#     orders = Order.objects.all()
+
+#     # serialize
+#     serializer = OrderSerializer(orders, many=True)
+
+#     # send response
+#     return Response(serializer.data)
+
+@api_view(['GET'])
+def order_list(request):
+    orders = Order.objects.prefetch_related('items__product') # this fixes the N+1 query problem
+    serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
