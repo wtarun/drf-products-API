@@ -27,11 +27,15 @@ class ProductSerializer(serializers.ModelSerializer):
         
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    # product = ProductSerializer()
+    product_name = serializers.CharField(source='product.name')
+    product_price = serializers.DecimalField(max_digits=10, decimal_places=2, source='product.price')
     class Meta:
         model = OrderItem
         fields = (
-            'product',
+            # 'product',
+            'product_name',
+            'product_price',
             'quantity',
         )
 
@@ -45,7 +49,7 @@ class OrderSerializer(serializers.ModelSerializer):
         total = 0
         for order_item in order_items:
             total += order_item.item_subtotal
-            return total
+            return f"${total}"
     class Meta:
         model = Order
         fields = (

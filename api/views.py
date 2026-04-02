@@ -3,6 +3,7 @@ from .models import Product, Order, OrderItem
 from .serializer import ProductSerializer, OrderSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 
 # Create your views here.
 @api_view(['GET'])
@@ -16,6 +17,12 @@ def product_list(request):
     # Response
     return Response(serializer.data)
 
+# ListAPIView - used for read-only endpoints to represent a collection of model instances.
+class ProductListAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
 @api_view(['GET'])
 def product_detail(request, id):
     #Fetch a single product
@@ -27,6 +34,14 @@ def product_detail(request, id):
 
     # response
     return Response(serializer.data)
+
+# RetrieveAPIView - used for read-only endpoints to represent a single model instance.
+class ProductDetailsListView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+    lookup_url_kwarg = 'product_id'
+
 
 # @api_view(['GET'])
 # def order_details(request):
@@ -44,3 +59,14 @@ def order_list(request):
     orders = Order.objects.prefetch_related('items__product') # this fixes the N+1 query problem
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+
+class UserOrdersListView(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user = self.request.user)
+
+
+
