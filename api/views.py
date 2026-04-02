@@ -44,6 +44,13 @@ def product_detail(request, id):
     # response
     return Response(serializer.data)
 
+# APIView version of product detail
+class ProductDetailAPIView(APIView):
+    def get(self, request, product_id):
+        product_detail = get_object_or_404(Product, pk=product_id)
+        serializer = ProductSerializer(product_detail)
+        return Response(serializer.data)
+
 # RetrieveAPIView - used for read-only endpoints to represent a single model instance.
 class ProductDetailsListView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
