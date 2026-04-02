@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 # Create your views here.
 @api_view(['GET'])
@@ -22,6 +23,13 @@ def product_list(request):
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+# APIView a class based view
+class ProductAPIView(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
