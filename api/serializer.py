@@ -3,7 +3,7 @@ from .models import Product, Order, OrderItem
 
 # Product serializer
 class ProductSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField()
+    # price = serializers.SerializerMethodField()
     class Meta:
         model = Product
         fields = (
@@ -22,8 +22,8 @@ class ProductSerializer(serializers.ModelSerializer):
         return value
 
     
-    def get_price(self, obj):
-        return f"${obj.price}"
+    # def get_price(self, obj):
+    #     return f"${obj.price}"
         
 
 class OrderItemSerializer(serializers.ModelSerializer):
