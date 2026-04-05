@@ -62,11 +62,19 @@ class ProductDetailAPIView(APIView):
         return Response(serializer.data)
 
 # RetrieveAPIView - used for read-only endpoints to represent a single model instance.
-class ProductDetailsListView(generics.RetrieveAPIView):
+# class ProductDetailsListView(generics.RetrieveAPIView):
+class ProductDetailsListView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
     lookup_url_kwarg = 'product_id'
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PUT', 'DELETE', 'PATCH']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 # @api_view(['GET'])
