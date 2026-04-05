@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
+from .filters import ProductFilter
 
 # Create your views here.
 @api_view(['GET'])
@@ -27,6 +28,7 @@ class ProductListAPIView(generics.ListAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filterset_class = ProductFilter
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
