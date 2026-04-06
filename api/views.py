@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from .filters import ProductFilter, BackendFilter
 from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 # Create your views here.
 @api_view(['GET'])
@@ -39,6 +40,12 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     ]
     search_fields = ['name', 'description']
     ordering_fields  = ['price', 'name']
+    pagination_class = PageNumberPagination
+    # pagination_class = LimitOffsetPagination
+    # pagination_class.page_size = 4
+    # pagination_class.page_query_param = 'pagenum'
+    # pagination_class.page_size_query_param = 'size'
+    # pagination_class.max_page_size = 4
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
