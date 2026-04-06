@@ -6,7 +6,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
-from .filters import ProductFilter
+from .filters import ProductFilter, BackendFilter
+from rest_framework import filters
 
 # Create your views here.
 @api_view(['GET'])
@@ -28,7 +29,16 @@ class ProductListAPIView(generics.ListAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filterset_class = ProductFilter
+    filterset_class = ProductFilter # we have used a 3rd party library 'django-filter' for filtering here 
+
+    # The SearchFilter class supports simple single query parameter based searching, and is based on the Django admin's search functionality.
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        BackendFilter
+    ]
+    search_fields = ['name', 'description']
+    ordering_fields  = ['price', 'name']
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
